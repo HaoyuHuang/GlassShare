@@ -1,6 +1,5 @@
 package com.glassshare.media;
 
-
 public class MediaBean {
 
 	private MediaType mediaType;
@@ -18,7 +17,17 @@ public class MediaBean {
 	}
 
 	public String getMediaExtension() {
-		return "image/" + extension;
+		switch (mediaType) {
+		case NULL:
+			break;
+		case PHOTO:
+			return "image/" + extension;
+		case VIDEO:
+			return "video/" + extension;
+		default:
+			break;
+		}
+		return null;
 	}
 
 	public void setMediaType(MediaType mediaType) {

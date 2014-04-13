@@ -10,10 +10,12 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.Thumbnails;
 import android.util.Log;
 
 public class MediaFactory {
@@ -34,6 +36,11 @@ public class MediaFactory {
 			saveAsPNG(gsDir, file);
 		}
 		return gsDir;
+	}
+
+	public static Bitmap readImageThumnail(String path, int width, int height) {
+		return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),
+				width, height, Thumbnails.MINI_KIND);
 	}
 
 	private static int calculateInSampleSize(BitmapFactory.Options options,
@@ -79,7 +86,7 @@ public class MediaFactory {
 	public static Bitmap getVideoPreview(String videoFilePath) {
 		Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoFilePath,
 				MediaStore.Images.Thumbnails.MINI_KIND);
-		return Bitmap.createScaledBitmap(thumbnail, 100, 100, true);
+		return thumbnail;
 	}
 
 	/**

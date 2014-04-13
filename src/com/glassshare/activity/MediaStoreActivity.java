@@ -1,7 +1,6 @@
 package com.glassshare.activity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import android.app.Activity;
@@ -34,6 +33,8 @@ public class MediaStoreActivity extends Activity implements
 	public static final String EXTRA_PHOTO_STORE = "photoStore";
 	public static final String EXTRA_VIDEO_STORE = "videoStore";
 
+	public static final String EXTRA_VIDEO_UPLOADED_LIST = "videoList";
+
 	public static final int skipInterval = 1000;
 
 	private List<MediaBean> mMediaList;
@@ -45,7 +46,7 @@ public class MediaStoreActivity extends Activity implements
 
 	private NetworkService mNetworkService;
 
-	private HashSet<String> uploadedFiles = new HashSet<String>();
+	private ArrayList<String> uploadedFiles = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,10 @@ public class MediaStoreActivity extends Activity implements
 				false);
 		boolean isVideoStore = getIntent().getBooleanExtra(EXTRA_VIDEO_STORE,
 				false);
+		if (getIntent().getStringArrayListExtra(EXTRA_VIDEO_UPLOADED_LIST) != null) {
+			uploadedFiles = getIntent().getStringArrayListExtra(
+					EXTRA_VIDEO_UPLOADED_LIST);
+		}
 		if (isPhotoStore) {
 			MediaLoader.preloadMedias(this, mMediaList, MediaType.PHOTO);
 			mMediaScrollAdapter = new MediaScrollAdapter(this, mMediaList,
@@ -68,9 +73,6 @@ public class MediaStoreActivity extends Activity implements
 			mMediaScrollAdapter = new MediaScrollAdapter(this, mMediaList,
 					mNetworkService, MediaType.VIDEO);
 		}
-		uploadedFiles.add(mMediaList.get(0).getFileName());
-		mNetworkService.publishPhotoByTCP(mMediaList.get(0), mMediaList.get(0)
-				.getFileName(), "", null);
 
 		mView = new CardScrollView(this) {
 			@Override
@@ -136,31 +138,25 @@ public class MediaStoreActivity extends Activity implements
 						switch (bean.getMediaType()) {
 						case PHOTO:
 							Log.i("glassShare", "tap");
-							if (!uploadedFiles.contains(bean.getMediaFilePath())) {
+							if (!uploadedFiles.contains(bean.getFileName())) {
 								uploadedFiles.add(bean.getFileName());
 								mNetworkService.publishPhotoByTCP(bean,
 										bean.getFileName(), "", null);
 							}
 							break;
 						case VIDEO:
-							// VideoView videoView = (VideoView)
-							// mMediaScrollAdapter
-							// .getCurrentView();
+							if (!uploadedFiles.contains(bean.getFileName())) {
+								uploadedFiles.add(bean.getFileName());
+								mNetworkService.prepareUploadVideo(bean, "",
+										null);
+							}
 							Log.i("glassShare", "videoTap");
 							Intent i = new Intent();
 							i.setAction("com.google.glass.action.VIDEOPLAYER");
 							i.putExtra("video_url", bean.getMediaFilePath());
+							i.putStringArrayListExtra(
+									EXTRA_VIDEO_UPLOADED_LIST, uploadedFiles);
 							startActivity(i);
-							// if (!bean.isActive()) {
-							// mMediaScrollAdapter.reset();
-							// videoView.start();
-							// bean.setActive(true);
-							// Log.i("glassShare", "videoTapStart");
-							// } else if (!videoView.isPlaying()) {
-							// videoView.resume();
-							// } else {
-							// videoView.pause();
-							// }
 							break;
 						case NULL:
 							break;

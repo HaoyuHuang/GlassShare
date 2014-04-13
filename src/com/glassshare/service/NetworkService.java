@@ -1,5 +1,7 @@
 package com.glassshare.service;
 
+import java.util.HashSet;
+
 import org.json.JSONException;
 
 import android.content.Context;
@@ -32,6 +34,8 @@ public class NetworkService {
 	public static final int CLIENT_FAST_VIDEO = 304;
 
 	public static final int CLIENT_SLOW_VIDEO = 305;
+	
+	private static HashSet<String> set = new HashSet<String>();
 
 	/**
 	 * @param context
@@ -75,11 +79,14 @@ public class NetworkService {
 	 */
 	public void prepareUploadPhoto(MediaBean mediaBean, String description,
 			final RequestListener requestListener) {
-		PhotoRequestPacket prp = new PhotoRequestPacket(Utils.UUID(), "",
-				CLIENT_PREPARE_UPLOAD_PHOTO_REQUEST,
-				mediaBean.getMediaExtension(), mediaBean.getFileName(),
-				description);
-		AsyncUtils.getInstance().sendMediaPacket(prp, requestListener);
+		if (!set.contains(mediaBean.getFileName())) {
+			set.add(mediaBean.getFileName());
+			PhotoRequestPacket prp = new PhotoRequestPacket(Utils.UUID(), "",
+					CLIENT_PREPARE_UPLOAD_PHOTO_REQUEST,
+					mediaBean.getMediaExtension(), mediaBean.getFileName(),
+					description);
+			AsyncUtils.getInstance().sendMediaPacket(prp, requestListener);
+		}
 	}
 
 	/**
@@ -89,11 +96,14 @@ public class NetworkService {
 	 */
 	public void publishPhotoByTCP(final MediaBean bean, final String fileName,
 			final String description, final RequestListener listener) {
-		PhotoRequestPacket packet = new PhotoRequestPacket(Utils.UUID(), "",
-				CLIENT_PREPARE_UPLOAD_PHOTO_REQUEST, bean.getMediaExtension(),
-				fileName, description);
-		AsyncUtils.getInstance().publishPhotoByTCP(packet, bean.getMediaFilePath(),
-				description, listener);
+		if (!set.contains(bean.getFileName())) {
+			set.add(bean.getFileName());
+			PhotoRequestPacket packet = new PhotoRequestPacket(Utils.UUID(),
+					"", CLIENT_PREPARE_UPLOAD_PHOTO_REQUEST,
+					bean.getMediaExtension(), fileName, description);
+			AsyncUtils.getInstance().publishPhotoByTCP(packet,
+					bean.getMediaFilePath(), description, listener);
+		}
 	}
 
 	/**
@@ -103,10 +113,13 @@ public class NetworkService {
 	 */
 	public void prepareUploadVideo(MediaBean bean, String description,
 			final RequestListener requestListener) {
-		VideoRequestPacket packet = new VideoRequestPacket(Utils.UUID(), "",
-				CLIENT_PREPARE_UPLOAD_VIDEO_REQUEST, bean.getMediaExtension(),
-				bean.getFileName(), description);
-		AsyncUtils.getInstance().sendMediaPacket(packet, requestListener);
+		if (!set.contains(bean.getFileName())) {
+			set.add(bean.getFileName());
+			VideoRequestPacket packet = new VideoRequestPacket(Utils.UUID(),
+					"", CLIENT_PREPARE_UPLOAD_VIDEO_REQUEST,
+					bean.getMediaExtension(), bean.getFileName(), description);
+			AsyncUtils.getInstance().sendMediaPacket(packet, requestListener);
+		}
 	}
 
 	/**

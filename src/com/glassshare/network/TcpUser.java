@@ -39,12 +39,12 @@ public class TcpUser {
 
 	public String prepareUploadPhotoByTCP(String fileName, String description,
 			MediaPacket packet) {
-		byte[] bytes = MediaLoader.fileToByteArray(new File(fileName));
-		packet.setFileLength(bytes.length);
-		this.sendMediaPacket(packet);
-		return this.uploadPhotoByTCP(bytes, description);
+		// byte[] bytes = MediaLoader.fileToByteArray(new File(fileName));
+		// packet.setFileLength(bytes.length);
+		return this.sendMediaPacket(packet);
+		// return this.uploadPhotoByTCP(bytes, description);
 	}
-	
+
 	public String uploadPhotoByTCP(byte[] bytes, String description) {
 		String resp = null;
 		Socket clientSocket = null;
@@ -150,17 +150,19 @@ public class TcpUser {
 				BufferedOutputStream bos = new BufferedOutputStream(
 						clientSocket.getOutputStream());
 
-				bos.write(packet.toJSON().toString().getBytes());
+				bos.write(new String(json.toString().getBytes(), "utf-8")
+						.getBytes());
 				bos.close();
-				BufferedInputStream bis = new BufferedInputStream(
-						clientSocket.getInputStream());
-				int data = -1;
-				StringBuilder builder = new StringBuilder();
-				while ((data = bis.read()) != -1) {
-					builder.append(data);
-				}
-				resp = builder.toString();
-				Log.i("response", builder.toString());
+				// BufferedReader bis = new BufferedReader(new
+				// InputStreamReader(
+				// clientSocket.getInputStream()));
+				// String line = null;
+				// StringBuilder builder = new StringBuilder();
+				// while ((line = bis.readLine()) != null) {
+				// builder.append(line);
+				// }
+				// resp = builder.toString();
+				// Log.i("response", builder.toString());
 				clientSocket.close();
 			}
 		} catch (JSONException e1) {

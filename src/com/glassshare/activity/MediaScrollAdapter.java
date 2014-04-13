@@ -3,6 +3,7 @@ package com.glassshare.activity;
 import java.util.List;
 
 import android.content.Context;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,9 @@ public class MediaScrollAdapter extends CardScrollAdapter {
 				final ImageView view = (ImageView) convertView
 						.findViewById(R.id.image);
 				view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				view.setImageBitmap(MediaFactory.decodeSampledBitmapFromFile(
+				// view.setImageBitmap(MediaFactory.decodeSampledBitmapFromFile(
+				// currentMediaBean.getMediaFilePath(), 100, 100));
+				view.setImageBitmap(MediaFactory.readImageThumnail(
 						currentMediaBean.getMediaFilePath(), 100, 100));
 				currentView = view;
 			}

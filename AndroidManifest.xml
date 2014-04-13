@@ -1,0 +1,48 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.glassshare"
+    android:versionCode="2"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <uses-library
+            android:name="com.google.android.glass"
+            android:required="true" />
+
+        <activity
+            android:name=".activity.MediaStoreActivity"
+            android:theme="@style/MenuTheme" >
+        </activity>
+        <activity
+            android:name=".activity.MediaStoreEntryActivity"
+            android:theme="@style/MenuTheme" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/app_voice_trigger" />
+        </activity>
+
+        <service
+            android:name=".service.GlassShareService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/app_name" >
+        </service>
+    </application>
+
+</manifest>

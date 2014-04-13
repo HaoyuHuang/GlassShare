@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">GlassShare</string>
+    
+    <string name="glass_voice_trigger">glass share</string>
+    <string name="glass_voice_prompt">tell me something</string>
+	<string name="media_time_line">media</string>
+    <string name="menu_item_photo">photo</string>
+    <string name="menu_item_video">video</string>
+    
+</resources>
